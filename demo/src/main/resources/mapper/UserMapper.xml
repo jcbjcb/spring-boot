@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "com.example.demo.dao.mybatis.UserMapper">
+
+    <resultMap id = "BaseResult" type = "com.example.demo.model.User">
+        <result property = "id" column = "id"/>
+        <result property = "name" column = "name"/>
+    </resultMap>
+    <select id = "findUserById" resultMap = "BaseResult">
+        SELECT * FROM user where id = #{id}
+    </select>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert  into user (name,age,sex) values (#{name},#{age},#{sex})
+    </insert>
+
+    <update id = "update" parameterType="com.example.demo.model.User">
+        update user set name = #{name} ,age = #{age} ,sex = #{sex} where id = ${id}
+    </update>
+</mapper>
