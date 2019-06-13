@@ -1,12 +1,14 @@
 package com.example.demo.config;
 
 import com.example.demo.Handler.LoginSuccessHandler;
+import com.example.demo.filter.UserAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @author jcb
@@ -32,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin()                    //  定义当需要用户登录时候，转到的登录页面。
     //          .loginPage("/login.html") //自定义登录页面
 //                .loginProcessingUrl("/login") //自定义登录接口地址
-                .successHandler(loginSuccessHandler)
+//                .successHandler(loginSuccessHandler)
                 .and()
                 // 定义哪些URL需要被保护、哪些不需要被保护
                 .authorizeRequests().antMatchers("/login").permitAll() //不需要保护的URL
@@ -42,5 +44,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().logoutSuccessUrl("/login").permitAll() // 登出
                 .and()
                 .csrf().disable();
+        //配置自定义过滤器 增加post json 支持
+        http.addFilterAt(UserAuthenticationFilterBean(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+
+    private UserAuthenticationFilter UserAuthenticationFilterBean() throws Exception {
+        UserAuthenticationFilter userAuthenticationFilter = new UserAuthenticationFilter();
+        userAuthenticationFilter.setAuthenticationManager(super.authenticationManager());
+        userAuthenticationFilter.setAuthenticationSuccessHandler(loginSuccessHandler);
+        return userAuthenticationFilter;
     }
 }
