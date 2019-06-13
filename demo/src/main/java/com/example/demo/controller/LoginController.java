@@ -13,7 +13,7 @@ public class LoginController {
 
     @RequestMapping("/login")
     public Object login(){
-        System.out.println("login controller");
+        System.out.println("login com.example.tkmapper.controller");
         return "login.html";
     }
 }
